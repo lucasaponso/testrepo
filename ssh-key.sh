@@ -1,4 +1,10 @@
 #!/bin/bash
+
+##Introduction of program!!
+echo "Hello, I am a program that generates a ssh key that can be used for cloning github repo's!!"
+sleep 2s
+
+
 ssh-keygen -t ed25519 -C lucasaponso@outlook.com
 eval "$(ssh-agent -s)"
 FILE=~/.ssh/config
