@@ -5,6 +5,6 @@ int main() {
    printf("%s\n", str); 
    // printf() displays the string inside quotation
    printf("Memory Address of a is: %p\n",&a);
-   printf("Hello, !!")
+   printf("Hello, !!");
    return 0;
 }
