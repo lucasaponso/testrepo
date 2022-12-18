@@ -46,23 +46,36 @@ HOST6=172.105.170.242
 
 ##Testing Ping     
 myArray=("$HOST1" "$HOST2" "$HOST3" "$HOST4" "$HOST5" "$HOST6")
+FILE1=/log/network.log
+FILE2=/log/security.log
 
-for i in "${myArray[@]}"
-do
-    sudo ping $i -c 1 >> /log/network.log
-    ping -c1 $i 1>/dev/null 2>/dev/null
-    SUCCESS=$?
-    if [ $SUCCESS -eq 0 ]
+if test -f "$FILE1" && test -f "$FILE2"; 
     then
-        echo "\n"
-        echo "$i has replied"
-    else
-        echo "$i didn't reply, check /log/network.log"
-    fi
-    sudo nmap $i >> /log/security.log  
+        for i in "${myArray[@]}"
+        do
     
-  
-done
+    
+        sudo ping $i -c 1 >> /log/network.log
+        ping -c1 $i 1>/dev/null 2>/dev/null
+        SUCCESS=$?
+        if [ $SUCCESS -eq 0 ]
+            then
+                echo "\n"
+                echo "$i has replied"
+            else
+                echo "$i didn't reply, check /log/network.log"
+        fi
+        sudo nmap $i >> /log/security.log  
+         done
+    else
+        touch /log/network.log
+        touch /log/security.log
+    
+       
+fi
+
+
+
 echo "nmap report in /log/security.log"
 git status
 read -p "Would you like to add any files to the git repository?: (Y/N)" git_add
