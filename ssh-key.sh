@@ -22,4 +22,12 @@ fi
 
 ssh-add ~/.ssh/id_ed25519.pub
 cat ~/.ssh/id_ed25519.pub
+echo "Would you like to remove the current directory: (Y/N)"
+read remove_pwd
+if [ [remove_pwd == 'Y' || remove_pwd == 'y'] ]
+then
+	rm -rf $(pwd)
+else 
+	echo "ok"
+fi
 
