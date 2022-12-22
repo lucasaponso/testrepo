@@ -1,17 +1,11 @@
-#!/bin/bash
-
-##PROGRAM STARTS HERE
 neofetch --ascii_distro archlinux
 echo $(date)
 umask_val=$(sudo su root -c umask)
 echo "umask = "$umask_val
-
-
 ##GETTING THE SCRIPT READY
 distro_type=$(cat /etc/*-release | grep DISTRIB_ID=Ubuntu)
 echo $distro_type
 echo "Using apt packet manager to install packages!!"
-
 if [[ $distro_type == "DISTRIB_ID=Ubuntu" ]]; then
      sudo apt update
      sudo apt upgrade -y
@@ -24,29 +18,14 @@ else
     echo "You most likely have an arch system, meaning package names may differ"
     echo "Unable to install packages!!"
 fi
-
-
-##TESTING NETWORK DISCOVERY
-
 echo "PINGING UNITS!!"
-
-
-##Avara Unit1
 HOST1=10.20.212.50
-##Avara Unit2
 HOST2=10.20.212.60
-##Avara Unit3
 HOST3=10.20.212.61
-##Avara Unit4
 HOST4=10.20.212.62
-##DarkHelmet
 HOST5=192.168.0.20
-##Linode Cloud Server
 HOST6=172.105.170.242
-
-##Testing Ping     
 myArray=("$HOST1" "$HOST2" "$HOST3" "$HOST4" "$HOST5" "$HOST6")
-
 for i in "${myArray[@]}"
 do
     sudo ping $i -c 1 >> /log/network.log
@@ -86,4 +65,3 @@ if [[ $git_commit == "Y" || $git_commit == "y" ]]
     then
         echo "Ok"
 fi
-
