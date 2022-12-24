@@ -5,12 +5,13 @@ echo -n "Enter an option (1-5):
 1) Ping Units
 2) Create SSH Key
 3) Check for dependency
-4) Exit"
+4) Exit
+5) Get Latest Kernel"
 read OPTION
 case $OPTION in
 
   1)
-    HOST1=10.20.212.50
+HOST1=10.20.212.50
 HOST2=10.20.212.60
 HOST3=10.20.212.61
 HOST4=10.20.212.62
@@ -95,6 +96,17 @@ fi
     ;;
     4)
     exit 0
+    ;;
+    5) 
+    mkdir ../linux_kernel_dev
+    cd ../linux_kernel_dev
+    wget https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.1.1.tar.xz
+    tar xvf linux-*
+    rm linux-6.1.1.tar.xz
+    cd linux-*
+    cp -v /boot/config-$(uname -r) .config
+    main
+
 esac
 
 
