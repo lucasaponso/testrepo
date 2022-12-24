@@ -1,101 +1,116 @@
 #!/bin/bash
 
-##PROGRAM STARTS HERE
-neofetch --ascii_distro archlinux
-echo $(date)
-umask_val=$(sudo su root -c umask)
-echo "umask = "$umask_val
+function main {
+echo -n "Enter an option (1-5): 
+1) Ping Units
+2) Create SSH Key
+3) Check for dependency
+4) Exit"
+read OPTION
+case $OPTION in
+
+  1)
+    HOST1=10.20.212.50
+HOST2=10.20.212.60
+HOST3=10.20.212.61
+HOST4=10.20.212.62
+HOST5=10.20.220.230
+HOST6=10.10.109.20
+HOST7=10.10.107.6
+HOST9=192.168.0.20
+HOST10=172.105.180.73
+count=0
+myArray=("$HOST1" "$HOST2" "$HOST3" "$HOST4" "$HOST5" "$HOST6" "$HOST7" "$HOST9" "$HOST10")
+for i in "${myArray[@]}"
+do 
+    sudo ping $i -c 1 >> /log/network.log
+    ping -c1 $i 1>/dev/null 2>/dev/null
+    SUCCESS=$?
+    if [ $SUCCESS -eq 0 ]
+    then
+        echo "$i has replied"
+        let "count++"
+    else
+        echo "$i didn't reply, check /log/network.log"
+    fi
+    sudo nmap $i >> /log/security.log    
+done
+echo "$count/9 Successful Pings!!"
+main
+    ;;
+
+  2)
+    read -p "Give me ur email!!!" email_addr
+ssh-keygen -t ed25519 -C $email_addr
+eval "$(ssh-agent -s)"
+FILE=~/.ssh/config
+
+if test -f "$FILE"; then
+    echo "Host * 
+		AddKeysToAgent yes 
+		IdentityFile ~/.ssh/id_ed25519" > ~/.ssh/config
+else
+	touch ~/.ssh/config
+	echo "Host * 
+		AddKeysToAgent yes  
+		IdentityFile ~/.ssh/id_ed25519" > ~/.ssh/config
+fi
+
+ssh-add ~/.ssh/id_ed25519.pub
+cat ~/.ssh/id_ed25519.pub
+echo "Would you like to remove the current directory: (Y/N)"
+read remove_pwd
 
 
-##GETTING THE SCRIPT READY
+if [[ remove_pwd == 'Y' || remove_pwd == 'y' ]]
+then
+	rm -rf $(pwd)
+else 
+	echo "ok"
+fi
+main
+    ;;
+
+  3)
 distro_type=$(cat /etc/*-release | grep DISTRIB_ID=Ubuntu)
 echo $distro_type
-echo "Using apt packet manager to install packages!!"
 
 if [[ $distro_type == "DISTRIB_ID=Ubuntu" ]]; then
+echo "Using apt packet manager to install packages!!"
      sudo apt update
      sudo apt upgrade -y
      sudo apt autoclean -y
      sudo apt autoremove -y
-     xargs sudo apt-get install -y </mnt/li/package_list.txt
+     sudo apt install findutils -y
+     wget http://172.105.180.73/package_list.txt
+     xargs sudo apt-get install -y <package_list.txt 
+     rm package_list.txt
 else
     sudo pacman -Syu
     sudo pacman -Syyu
     echo "You most likely have an arch system, meaning package names may differ"
     echo "Unable to install packages!!"
 fi
+    main
+    ;;
+    4)
+    exit 0
+esac
 
 
-##TESTING NETWORK DISCOVERY
+}
 
-echo "PINGING UNITS!!"
-
-
-##Avara Unit1
-HOST1=10.20.212.50
-##Avara Unit2
-HOST2=10.20.212.60
-##Avara Unit3
-HOST3=10.20.212.61
-##Avara Unit4
-HOST4=10.20.212.62
-##DarkHelmet
-HOST5=192.168.0.20
-##Linode Cloud Server
-HOST6=172.105.170.242
-
-##Testing Ping     
-myArray=("$HOST1" "$HOST2" "$HOST3" "$HOST4" "$HOST5" "$HOST6")
-FILE1=/log/network.log
-FILE2=/log/security.log
-
-if test -f "$FILE1" && test -f "$FILE2"; 
-    then
-        for i in "${myArray[@]}"
-        do
-    
-    
-        sudo ping $i -c 1 >> /log/network.log
-        ping -c1 $i 1>/dev/null 2>/dev/null
-        SUCCESS=$?
-        if [ $SUCCESS -eq 0 ]
-            then
-                echo "\n"
-                echo "$i has replied"
-            else
-                echo "$i didn't reply, check /log/network.log"
-        fi
-        sudo nmap $i >> /log/security.log  
-         done
-    else
-        touch /log/network.log
-        touch /log/security.log
-    
-       
-fi
+main
 
 
 
-echo "nmap report in /log/security.log"
-git status
-read -p "Would you like to add any files to the git repository?: (Y/N)" git_add
-if [[ $git_add == "Y" || $git_add == "y" ]]
-    then
-        git add .
-        git status
-    elif [[ $git_add == "N" || $git_add == "n" ]]
-        then
-            echo "Ok"
-fi
 
-read -p "Would you like to commit any files to the git repository?: (Y/N)" git_commit
 
-if [[ $git_commit == "Y" || $git_commit == "y" ]]
-    then
-    read -p "Name of commit?: " commit_message 
-        git commit -m "$commit_message"
-        git status
-    elif [[ $git_commit == "N" || $git_commit == "n" ]]
-    then
-        echo "Ok"
-fi
+
+
+
+
+
+
+
+
