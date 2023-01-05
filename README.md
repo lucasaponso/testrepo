@@ -1,4 +1,4 @@
-# testrepo
+# AutomationRepo
 
 - touch helloworld.c
 - git status
