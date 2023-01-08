@@ -10,6 +10,7 @@ int main()
     const char *command = str.c_str();
 
     cout << "Compiling file using " << command << endl;
+    cout << "Git Change Test"
     system(command);
   }
   return 0;
